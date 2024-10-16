@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/models/todo.dart';
 import 'package:todo_app/widgets/todo_tile.dart';
+import 'package:todo_app/provider/todo_provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,7 +16,9 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.amber.shade300,
         actions: [
           IconButton(
-            onPressed: () => GoRouter.of(context).push('/add'),
+            onPressed: () =>
+                //This should navigate
+                GoRouter.of(context).push('/add'),
             icon: const Icon(
               Icons.add_box_outlined,
               size: 30,
@@ -22,10 +26,16 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-          child: TodoTile(
-        todo: Todo(id: 1, title: "First ToDo"),
-      )),
+      body: Consumer<TodoProvider>(
+        builder: (context, todoProvider, child) => ListView.builder(
+          itemCount: todoProvider.todos.length,
+          itemBuilder: (BuildContext context, int index) {
+            return TodoTile(
+              todo: todoProvider.todos[index],
+            );
+          },
+        ),
+      ),
     );
   }
 }
